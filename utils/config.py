@@ -36,6 +36,10 @@ def get_config():
     return config
 
 
+def get(param):
+    config = get_config()
+    return config.get(param, None)
+
 def write_config(config):
     with open(config_file, 'w') as file:
         documents = yaml.dump(config, file)
@@ -47,5 +51,29 @@ def get_path(root_filepath):
         This function depends on this utility being one directory deeper than root.
     """
     return os.path.join(path, "../", root_filepath)
+
+
+def get_path_to_raw_data():
+    """
+        Retrieve the path to the raw data. 
+        Returns a valid path regardless of where the API is being used.
+    """
+    return os.path.join(path, "../data/raw/raw.csv")
+
+
+def get_path_to_processed_data():
+    """
+        Retrieve the path to the processed data.
+        Returns a valid path regardless of where the API is being used.    
+    """
+    return os.path.join(path, "../data/processed/processed.csv")
+    
+
+def get_path_to_partitioned_data():
+    """
+        Retrieve the path to the partitioned data.
+        Returns a valid path regardless of where the API is being used.
+    """
+    return os.path.join(path, "../data/partitioned/")
 
 

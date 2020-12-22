@@ -28,6 +28,14 @@ for var in "$*"; do
                         PROCESS="true"
                         ;;
 
+                partition)
+                        PARTITION="true"
+                        ;;
+
+                store)
+                        STORE="true"
+                        ;;
+
                 model)
                         MODEL="true"
                         ;;
@@ -35,15 +43,19 @@ for var in "$*"; do
                 all)
                         PREP="true"
                         PROCESS="true"
+                        PARTITION="true"
+                        STORE="true"
                         MODEL="true"
                         ;;
 
                 help)
                         echo "Usage:"
-                        echo "$0 (prepare|process|model|all|help) "
+                        echo "$0 (prepare|process|partition|store|model|all|help) "
                         echo ""
                         echo "   prepare     To download data and unzip data"
                         echo "   process     To run the global processing script"
+                        echo "   partition   To partition the data for training and testing."
+                        echo "   store       To store the partitioned data into S3"
                         echo "   model       To run the set of models configured in experiment"
                         echo "   all         To run all of the above"
                         echo "   help        To view the help"
@@ -62,12 +74,27 @@ fi
 if [ $PROCESS = "true" ]
 then
         echo "Processing your data...";
-        src/process_data.sh
+        python src/process_data.py
+        echo "Done.\n";
+fi
+
+if [ $PARTITION = "true" ]
+then
+        echo "Partitioning your data...";
+        python src/partition_data.py
+        echo "Done.\n";
+fi
+
+if [ $STORE = "true" ]
+then
+        echo "Storing your data to S3...";
+        python src/s3_store_data.py
         echo "Done.\n";
 fi
 
 if [ $MODEL = "true" ]
 then
         echo "Modelling your data...";
+        experiments/RUN.sh
         echo "Done.\n";
 fi
