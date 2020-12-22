@@ -1,0 +1,3 @@
+name: Hospital_Discharge
+s3_bucket:
+target: readmission
