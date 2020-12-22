@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 import sys
+sys.path.append("./")
 sys.path.append("../")
 import utils.config as cfg
 
@@ -11,15 +12,16 @@ target = cfg.get("target")
 
 
 def partition_data(input_path, output_path, target):
-
+    """
+        The partition function will split the data according to the parameters
+        in the project configuration.
+    """
     df = pd.read_csv(input_path, sep=",")
- 
     train_prop = cfg.get("train_prop")
     valid_prop = cfg.get("valid_prop")
     valid_remainder = valid_prop/(1-train_prop)
     train, rest = train_test_split(df, train_size=train_prop, stratify=target)
     valid, test = train_test_split(rest, train_size=valid_remainder, stratify=target)
-
 
     # Create CSV files for Train / Validation / Test
     train.to_csv(output_path + "train.csv", index=False, header=True)

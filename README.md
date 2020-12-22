@@ -56,7 +56,8 @@ They both rely on the same underlying scripts and configuration.
 
 ### Data Prep
 
-Follow the Notebook [00_Prepare_data.ipynb](data/00_Prepare_data.ipynb) to get the datt and prepare it for modelling.
+Follow the Notebook [data/prepare_data.ipynb](data/prepare_data.ipynb) 
+to understand how we get the data and prepare it for modelling.
 
 ### Experiments
 

@@ -13,15 +13,17 @@ then
         exit 0
 fi
 
-PREP="false"
+LOAD="false"
 PROCESS="false"
+PARTITION="false"
+STORE="false"
 MODEL="false"
 
 for var in "$*"; do
         case $var in
 
-                prepare)
-                        PREP="true"
+                load)
+                        LOAD="true"
                         ;;
 
                 process)
@@ -41,7 +43,7 @@ for var in "$*"; do
                         ;;
 
                 all)
-                        PREP="true"
+                        LOAD="true"
                         PROCESS="true"
                         PARTITION="true"
                         STORE="true"
@@ -50,9 +52,9 @@ for var in "$*"; do
 
                 help)
                         echo "Usage:"
-                        echo "$0 (prepare|process|partition|store|model|all|help) "
+                        echo "$0 (load|process|partition|store|model|all|help) "
                         echo ""
-                        echo "   prepare     To download data and unzip data"
+                        echo "   load        To download and unzip raw data"
                         echo "   process     To run the global processing script"
                         echo "   partition   To partition the data for training and testing."
                         echo "   store       To store the partitioned data into S3"
@@ -64,10 +66,10 @@ for var in "$*"; do
         esac
 done
 
-if [ $PREP = "true" ]
+if [ $LOAD = "true" ]
 then
-        echo "Preparing your data...";
-        src/prepare_data.sh data
+        echo "Loading your data...";
+        src/load_data.sh data
         echo "Done.\n";
 fi
 
