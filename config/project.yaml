@@ -1,5 +1,5 @@
 name: Hospital_Discharge
 s3_bucket:
-target: readmission
+target: readmitted
 train_prop: 0.6
 valid_prop: 0.2

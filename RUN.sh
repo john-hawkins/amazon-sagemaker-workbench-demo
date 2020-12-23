@@ -5,6 +5,7 @@
 #
 ##############################################################################
 
+
 if [ $# -eq 0 ]
 then
         echo "CL Parameters are mandatory. We need to know which part to run."
@@ -65,6 +66,27 @@ for var in "$*"; do
                         ;;
         esac
 done
+
+######################################################################
+# ENSURE THAT THE SCRIPT IS ALWAYS EXECUTED FROM ITS LOCATION 
+# AND THAT PYTHON CAN FIND LOCAL PACKAGES
+######################################################################
+DIR="$(cd "$(dirname "$0")" && pwd)"
+cd $DIR
+
+if [[ -z "${PYTHONPATH}" ]]; then
+  export PYTHONPATH="$DIR"
+else
+  echo $PYTHONPATH | grep -q "$DIR"
+  if [ $? -eq 0 ]; then
+    export PYTHONPATH="$PYTHONPATH:$DIR"
+  else
+    export PYTHONPATH
+  fi
+fi
+
+
+
 
 if [ $LOAD = "true" ]
 then

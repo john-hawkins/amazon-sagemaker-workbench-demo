@@ -1,13 +1,14 @@
 #!/bin/bash
-######################################################
-# This script will ensure that the PYTHON PATH ENV 
-# Variable contains the root of the project so scripts
-# can find the utils library.
-######################################################
+###############################################################
+# This script will ensure that the PYTHONPATH ENV 
+# Variable contains the root of the project so scripts that are
+# executed with this SETUP can always find packages installed
+# at the root of the library.
+###############################################################
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "Before: $PYTHONPATH"
+#echo "Before: $PYTHONPATH"
 
 if [[ -z "${PYTHONPATH}" ]]; then
   export PYTHONPATH="$DIR"
@@ -23,6 +24,6 @@ else
 
 fi
 
-echo "After: $PYTHONPATH"
+#echo "After: $PYTHONPATH"
 
 
