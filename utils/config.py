@@ -33,9 +33,13 @@ def print_failure(message, end = '\n'):
 def print_success(message, end = '\n'):
     sys.stdout.write('\x1b[1;32m' + message.strip() + '\x1b[0m' + end)
 
-def get_config():
+def get_raw_config():
     with open(config_file) as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
+    return config
+
+def get_config():
+    config = get_raw_config()
     config['region'] = region
     config['bucket_name'] = bucket_name
     config['bucket_prefix'] = bucket_prefix
@@ -50,11 +54,12 @@ def get(param):
     return config.get(param, None)
 
 def write_config(config):
-    with open(config_file, 'w') as file:
-        documents = yaml.dump(config, file)
+    with open(config_file, 'w') as outfile:
+        yaml.dump(config, outfile, default_flow_style=False, allow_unicode=True)
+
 
 def add_s3_path(tag, uri):
-    config = get_config()
+    config = get_raw_config()
     name = "S3_path_" + tag
     config[name] = uri
     write_config(config)

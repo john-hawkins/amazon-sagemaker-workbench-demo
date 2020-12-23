@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import boto3
@@ -9,6 +8,7 @@ sys.path.append("../")
 import utils.config as cfg
 
 config = cfg.get_config()
+region = config['region']
 bucket_name = config['bucket_name']
 bucket_prefix = config['bucket_prefix']
 sgmk_session = config['sgmk_session']
@@ -37,6 +37,8 @@ estimator = sagemaker.estimator.Estimator(
     max_wait=30*60,  # Maximum clock time (including spot delays)
 )
 
+print("Estimator: ", estimator)
+
 # define its hyperparameters
 estimator.set_hyperparameters(
     num_round=150,     # int: [1,300]
@@ -46,9 +48,10 @@ estimator.set_hyperparameters(
     objective="binary:logistic",
 )
 
+print("Starting training...")
 # start a training (fitting) job
 estimator.fit({ "train": s3_input_train, "validation": s3_input_validation })
-
+print("Done.")
 
 # Real-time endpoint:
 predictor = estimator.deploy(
@@ -57,7 +60,5 @@ predictor = estimator.deploy(
     # wait=False,  # Remember, predictor.predict() won't work until deployment finishes!
 )
 
-print(predictor)
-
-
+print("Endpoint:", predictor)
 

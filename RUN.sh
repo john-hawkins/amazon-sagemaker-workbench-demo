@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ##############################################################################
 # Master RUN script.
 # To execute all components of the demo without using Jupyter.
@@ -123,13 +123,19 @@ fi
 if [ $STORE = "true" ]
 then
         echo "Storing your data to S3...";
-        python src/s3_store_data.py
+        python src/store_data.py
         echo "Done.\n";
 fi
 
 if [ $MODEL = "true" ]
 then
         echo "Modelling your data...";
-        experiments/RUN.sh
+
+        while read model script
+        do
+            echo "$model: $script"
+            python experiments/$(echo $script)
+        done < experiments/model_list.config
+
         echo "Done.\n";
 fi
