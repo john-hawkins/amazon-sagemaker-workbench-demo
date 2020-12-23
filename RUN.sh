@@ -39,6 +39,13 @@ for var in "$*"; do
                         STORE="true"
                         ;;
 
+                prepare)
+                        LOAD="true"
+                        PROCESS="true"
+                        PARTITION="true"
+                        STORE="true"
+                        ;;
+
                 model)
                         MODEL="true"
                         ;;
@@ -52,16 +59,19 @@ for var in "$*"; do
                         ;;
 
                 help)
-                        echo "Usage:"
-                        echo "$0 (load|process|partition|store|model|all|help) "
+                        echo " USAGE"
+                        echo "-------------------------------------------------"
+                        echo "$0 (load|process|partition|store|prepare|model|all|help) "
                         echo ""
                         echo "   load        To download and unzip raw data"
                         echo "   process     To run the global processing script"
                         echo "   partition   To partition the data for training and testing."
                         echo "   store       To store the partitioned data into S3"
+                        echo "   prepare     Perform all of the above steps: LOAD,PROCESS,PARTITION,STORE"
                         echo "   model       To run the set of models configured in experiment"
                         echo "   all         To run all of the above"
                         echo "   help        To view the help"
+                        echo ""
                         exit 0
                         ;;
         esac
@@ -85,8 +95,9 @@ else
   fi
 fi
 
-
-
+######################################################################
+# EXECUTE THE REQUIRED STEPS 
+######################################################################
 
 if [ $LOAD = "true" ]
 then

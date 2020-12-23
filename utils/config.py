@@ -53,6 +53,17 @@ def write_config(config):
     with open(config_file, 'w') as file:
         documents = yaml.dump(config, file)
 
+def add_s3_path(tag, uri):
+    config = get_config()
+    name = "S3_path_" + tag
+    config[name] = uri
+    write_config(config)
+
+def get_s3_path(tag):
+    config = get_config()
+    name = "S3_path_" + tag
+    config.get(name,"")
+
 def get_path(root_filepath):
     """
         Given a path to a file from the root of the project.
