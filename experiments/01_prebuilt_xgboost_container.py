@@ -1,4 +1,31 @@
 
+import numpy as np
+import pandas as pd
+import boto3
+import sagemaker
+import sys
+
+sys.path.append("../")
+import utils.config as cfg
+
+config = cfg.get_config()
+bucket_name = config['bucket_name']
+bucket_prefix = config['bucket_prefix']
+sgmk_session = config['sgmk_session']
+sgmk_role = config['sgmk_role']
+
+train_uri = cfg.get_s3_path('train')
+val_uri = cfg.get_s3_path('validation')
+
+# specify container
+training_image = sagemaker.image_uris.retrieve("xgboost", region=region, version="1.0-1")
+
+# Define the data input channels for the training job:
+s3_input_train = sagemaker.inputs.TrainingInput(train_uri, content_type="csv")
+s3_input_validation = sagemaker.inputs.TrainingInput(val_uri, content_type="csv")
+
+print(f"{s3_input_train.config}\n\n{s3_input_validation.config}")
+
 # Instantiate an XGBoost estimator object
 estimator = sagemaker.estimator.Estimator(
     image_uri=training_image,  # XGBoost algorithm container
@@ -23,37 +50,14 @@ estimator.set_hyperparameters(
 estimator.fit({ "train": s3_input_train, "validation": s3_input_validation })
 
 
-# import required HPO objects
-from sagemaker.tuner import IntegerParameter, CategoricalParameter, ContinuousParameter, HyperparameterTuner
-
-# set up hyperparameter ranges
-ranges = {
-    "num_round": IntegerParameter(1, 300),
-    "max_depth": IntegerParameter(1, 10),
-    "alpha": ContinuousParameter(0, 5),
-    "eta": ContinuousParameter(0, 1),
-}
-
-# set up the objective metric
-objective = "validation:auc"
-
-# instantiate a HPO object
-tuner = HyperparameterTuner(
-    estimator=estimator,              # the SageMaker estimator object
-    hyperparameter_ranges=ranges,     # the range of hyperparameters
-    max_jobs=10,                      # total number of HPO jobs
-    max_parallel_jobs=2,              # how many HPO jobs can run in parallel
-    strategy="Bayesian",              # the internal optimization strategy of HPO
-    objective_metric_name=objective,  # the objective metric to be used for HPO
-    objective_type="Maximize",        # maximize or minimize the objective metric
-)  
-
-
-
 # Real-time endpoint:
 predictor = estimator.deploy(
     initial_instance_count=1,
     instance_type="ml.m5.large",
     # wait=False,  # Remember, predictor.predict() won't work until deployment finishes!
 )
+
+print(predictor)
+
+
 
