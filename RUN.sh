@@ -5,20 +5,22 @@
 #
 ##############################################################################
 
-
-if [ $# -eq 0 ]
-then
-        echo "CL Parameters are mandatory. We need to know which part to run."
-        echo "  (run $0 -h for help)"
-        echo ""
-        exit 0
-fi
-
 LOAD="false"
 PROCESS="false"
 PARTITION="false"
 STORE="false"
 MODEL="false"
+HELP="false"
+CLEAN="false"
+
+if [ $# -eq 0 ]
+then
+        echo ""
+        echo "Command Switch Required."
+        echo ""
+        HELP="true"
+fi
+
 
 for var in "$*"; do
         case $var in
@@ -59,21 +61,13 @@ for var in "$*"; do
                         ;;
 
                 help)
-                        echo " USAGE"
-                        echo "-------------------------------------------------"
-                        echo "$0 (load|process|partition|store|prepare|model|all|help) "
-                        echo ""
-                        echo "   load        To download and unzip raw data"
-                        echo "   process     To run the global processing script"
-                        echo "   partition   To partition the data for training and testing."
-                        echo "   store       To store the partitioned data into S3"
-                        echo "   prepare     Perform all of the above steps: LOAD,PROCESS,PARTITION,STORE"
-                        echo "   model       To run the set of models configured in experiment"
-                        echo "   all         To run all of the above"
-                        echo "   help        To view the help"
-                        echo ""
-                        exit 0
+                        HELP="true"
                         ;;
+
+                clean)
+                        CLEAN="true"
+                        ;;
+
         esac
 done
 
@@ -103,28 +97,28 @@ if [ $LOAD = "true" ]
 then
         echo "Loading your data...";
         src/load_data.sh data
-        echo "Done.\n";
+        echo "Done.";
 fi
 
 if [ $PROCESS = "true" ]
 then
         echo "Processing your data...";
-        python src/process_data.py
-        echo "Done.\n";
+        python3 src/process_data.py
+        echo "Done.";
 fi
 
 if [ $PARTITION = "true" ]
 then
         echo "Partitioning your data...";
-        python src/partition_data.py
-        echo "Done.\n";
+        python3 src/partition_data.py
+        echo "Done.";
 fi
 
 if [ $STORE = "true" ]
 then
         echo "Storing your data to S3...";
-        python src/store_data.py
-        echo "Done.\n";
+        python3 src/store_data.py
+        echo "Done.";
 fi
 
 if [ $MODEL = "true" ]
@@ -134,8 +128,33 @@ then
         while read model script
         do
             echo "$model: $script"
-            python experiments/$(echo $script)
+            python3 experiments/$(echo $script)
         done < experiments/model_list.config
 
-        echo "Done.\n";
+        echo "Done.";
 fi
+
+
+if [ $CLEAN = "true" ]
+then
+        echo "Cleaning your endpoints... ";
+        echo "TODO...";
+fi
+
+if [ $HELP = "true" ]
+then
+   echo "  USAGE"
+   echo "  -----------------------------------------------------------------"
+   echo "  $0 (load|process|partition|store|prepare|model|all|clean) "
+   echo ""
+   echo "    load        To download and unzip raw data"
+   echo "    process     To run the global processing script"
+   echo "    partition   To partition the data for training and testing."
+   echo "    store       To store the partitioned data into S3"
+   echo "    prepare     Perform all prep steps: LOAD,PROCESS,PARTITION,STORE"
+   echo "    model       To run the set of models configured in experiment"
+   echo "    all         To run all of the above"
+   echo "    clean       Clean up the endpoints"
+   echo ""
+fi
+

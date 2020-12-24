@@ -72,7 +72,7 @@ def add_s3_path(tag, uri):
 def get_s3_path(tag):
     config = get_config()
     name = "S3_path_" + tag
-    config.get(name,"")
+    return config.get(name,"")
 
 def get_path(root_filepath):
     """
