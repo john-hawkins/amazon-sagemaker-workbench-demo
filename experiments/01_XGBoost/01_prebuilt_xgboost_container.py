@@ -4,7 +4,7 @@ import boto3
 import sagemaker
 import sys
 
-sys.path.append("../")
+sys.path.append("../../")
 import utils.config as cfg
 
 config = cfg.get_config()

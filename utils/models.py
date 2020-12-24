@@ -1,23 +1,47 @@
 # -*- coding: utf-8 -*-
 """
-These functions allow models built in independent jobs to registoer their existance and
-permit global, indepedenant comparison
-"""
+   Model API Interface
 
-import pandas as pd
+   These functions allow models built in independent jobs to register their existance and
+   permit global, indepedendent comparison in other parts of the workbench.
+"""
+import os
+import json
+import sys
+from os.path import abspath
+
+path = os.path.split(__file__)[0]
+
+config_file = abspath(os.path.join(path, "../config/models.json"))
+
 
 def list_models():
     """
       Get all models built in this project
     """
-    return ""
+    config = get_config()
+    return list(config['models'].keys())
 
 
-def registoer_model(name, description, endpoint):
+def register(name, description, artefact, endpoint):
     """
       Register a model for comparison
     """
-    return ""
+    temp = {"name": name, "description":description, "artefact":artefact, "endpoint":endpoint}
+    config = get_config()
+    config['models'][name] = temp
+    write_config(config)
+    return "Done"
+
+
+def get_config():
+    with open(config_file) as json_file:
+        data = json.load(json_file)
+    return data
+
+def write_config(data):
+    with open(config_file, 'w') as outfile:
+        json.dump(data, outfile, indent=2)
 
 
 

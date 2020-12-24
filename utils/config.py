@@ -12,19 +12,21 @@ config_file = abspath(os.path.join(path, "../config/project.yaml"))
 boto_session = boto3.Session()
 region = boto_session.region_name
 
-
+####################################################################
 if region is None:
     bucket_name = "" 
     bucket_prefix = "project_"
-    sgmk_session = ""
-    sgmk_client = ""
-    sgmk_role = ""
+    sgmk_session = None
+    sgmk_client = None
+    sgmk_role = None
+    sm_boto3 = None
 else:
     bucket_name = sagemaker.Session().default_bucket()
     bucket_prefix = "project_"  
     sgmk_session = sagemaker.Session()
     sgmk_client = boto_session.client("sagemaker")
     sgmk_role = sagemaker.get_execution_role()
+    sm_boto3 = boto3.client('sagemaker')
 
 ####################################################################
 def print_failure(message, end = '\n'):
@@ -32,6 +34,8 @@ def print_failure(message, end = '\n'):
 
 def print_success(message, end = '\n'):
     sys.stdout.write('\x1b[1;32m' + message.strip() + '\x1b[0m' + end)
+
+####################################################################
 
 def get_raw_config():
     with open(config_file) as file:
@@ -46,6 +50,7 @@ def get_config():
     config['sgmk_session'] = sgmk_session
     config['sgmk_client'] = sgmk_client
     config['sgmk_role'] = sgmk_role
+    config['sm_boto3'] = sm_boto3
     return config
 
 
