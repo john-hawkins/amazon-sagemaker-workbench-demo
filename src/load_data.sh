@@ -19,5 +19,5 @@ mv dataset_diabetes/IDs_mapping.csv ./IDs_mapping.csv
 
 # CLEAN UP
 rm dataset_diabetes.zip
-rm dataset_diabetes/*
 rm -d dataset_diabetes
+
