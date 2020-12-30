@@ -9,6 +9,7 @@ import os
 import json
 import sys
 from os.path import abspath
+from sagemaker.sklearn.model import SKLearnPredictor
 
 path = os.path.split(__file__)[0]
 
@@ -29,7 +30,7 @@ def register(name, description, artefact, endpoint):
     """
     # We need the endpoint name and class in order to re-create an endpoint
     endpoint_name = endpoint._endpoint_config_name
-    endpoint_class = endpoint.__class__
+    endpoint_class = endpoint.__class__.__name__
     temp = {"name": name, 
             "description":description,
             "artefact":artefact, 
@@ -52,4 +53,14 @@ def write_config(data):
         json.dump(data, outfile, indent=2)
 
 
+
+def get_predictor(endpoint_config_name, endpoint_class_name, sgmk_session):
+    """
+     Recreate a predictor object with the information stored in the config
+    """
+    predictor = SKLearnPredictor(
+        endpoint_name=endpoint_config_name,
+        sagemaker_session=sgmk_session
+    )
+    return predictor
 
