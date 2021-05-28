@@ -1,4 +1,12 @@
 {
-   "project":"Project Name",
-   "models":{}
+  "project": "Project Name",
+  "models": {
+    "Custom_SKLearn_RF": {
+      "name": "Custom_SKLearn_RF",
+      "description": "Random Forest Classifier with Added Features",
+      "artefact": "s3://sagemaker-eu-west-2-320389841409/rf-scikit-2021-03-01-23-10-22-107/output/model.tar.gz",
+      "endpoint_name": "sagemaker-scikit-learn-2021-03-01-23-14-35-130",
+      "endpoint_class": "SKLearnPredictor"
+    }
+  }
 }

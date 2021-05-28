@@ -1,5 +1,8 @@
+S3_path_test: s3://sagemaker-eu-west-2-320389841409/project_/test.csv
+S3_path_train: s3://sagemaker-eu-west-2-320389841409/project_/train.csv
+S3_path_validation: s3://sagemaker-eu-west-2-320389841409/project_/validation.csv
 name: Hospital_Discharge
-s3_bucket:
+s3_bucket: null
 target: readmitted
 train_prop: 0.6
 valid_prop: 0.2
